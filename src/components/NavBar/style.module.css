@@ -1,0 +1,9 @@
+.nav_organization{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav_organization p{
+    margin: 0;
+}

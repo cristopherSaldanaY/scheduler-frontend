@@ -1,0 +1,48 @@
+.main_container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 25px;
+}
+
+.main_header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.header_btn {
+    display: flex;
+    gap: 20px;
+}
+
+.btn_back{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 50px;
+    margin: 0;
+}
+
+.btn_back img:hover{
+    cursor: pointer;
+}
+
+.btn_back span{
+    color: var(--gray-700, #344054);
+    font-size: 25px;
+}
+
+.items {
+    display: flex;
+    padding-top: 40px;
+    
+}
+
+.items ul{
+    gap: 10px;
+}
+
+.tables{
+    background-color: aliceblue;
+}
