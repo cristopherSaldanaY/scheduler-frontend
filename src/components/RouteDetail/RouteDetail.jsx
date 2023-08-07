@@ -89,7 +89,7 @@ const RouteDetail = ({ routes,organizationsNid, fetchRoutes }) => {
       Swal.fire({
         icon: 'error',
         title: 'Conflicto de horario',
-        text: 'Seleccione otro conductor!',
+        text: 'Seleccione otro conductor o vehiculo!',
       })
     }
   }
