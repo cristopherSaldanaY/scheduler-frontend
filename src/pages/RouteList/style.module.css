@@ -26,3 +26,19 @@
 .tables{
     background-color: #fafafa;
 }
+
+.table_header{
+ display: flex;
+ justify-content: space-between;
+ padding-bottom: 20px;
+}
+
+.nav_organization{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav_organization p{
+    margin: 0;
+}

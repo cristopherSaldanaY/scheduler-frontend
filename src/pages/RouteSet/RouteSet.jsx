@@ -1,87 +1,126 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { SchedulerAPI } from "../../api/scheduler";
 import s from "./style.module.css";
-import { BsGeoAltFill } from "react-icons/bs";
-import ArrowBack from "../../assets/icons/arrow-back.png";
-import RouteDetail from '../../components/RouteDetail/RouteDetail'
+import { useNavigate } from "react-router-dom";
+import RouteDetail from "../../components/RouteDetail/RouteDetail";
+import MapImage  from "../../assets/images/mapa.png"
 
 const RouteSet = () => {
   const location = useLocation();
-  const { username, organizationId } = location.state;
+  const navigate = useNavigate();
+  const { organizationsNid, organizations } = location.state;
   const [routes, setRoutes] = useState([]);
 
-  async function fetchRoutes(organizationId) {
+  async function fetchRoutes(selectedOrganization) {
     try {
       const response = await SchedulerAPI.fetchRoutesByOrganization(
-        organizationId
+        selectedOrganization
       );
 
-      if (response.length > 0) {
-        setRoutes(response);
-        console.log("Rutas actualizadas:", response);
+      const responseUpdated = await Promise.all(
+        response.map(async (route) => {
+          let driverName = null;
+          let vehiclePlate = null;
+
+          if (route.driver_id) {
+            driverName = await SchedulerAPI.fetchDriverById(route.driver_id);
+          }
+
+          if (route.vehicle_id) {
+            vehiclePlate = await SchedulerAPI.fetchVehicleById(
+              route.vehicle_id
+            );
+          }
+
+          return {
+            ...route,
+            driver: driverName,
+            vehicle: vehiclePlate,
+          };
+        })
+      );
+
+      if (responseUpdated.length > 0) {
+        setRoutes(responseUpdated);
+        console.log("Rutas actualizadas:", responseUpdated);
       }
     } catch (error) {
       console.log("Error al obtener rutas", error);
     }
   }
 
+  async function updateRoutes(routes) {
+    const routesUpdated = routes.map(async (route) => {
+      const driverName = await SchedulerAPI.fetchDriverById(route.driver_id);
+      const vehiclePlate = await SchedulerAPI.fetchVehicleById(
+        route.vehicle_id
+      );
+
+      const { name } = driverName;
+      const { plate } = vehiclePlate;
+
+      return {
+        ...route,
+        driver_name: name,
+        vehicle_plate: plate,
+      };
+    });
+    setRoutes(routesUpdated);
+  }
+
+  const handleBack = () =>{
+
+    navigate("/routeList", {
+      state: {
+        organizationsNid: organizations,
+      },
+    });
+  }
+
   useEffect(() => {
-    fetchRoutes(organizationId);
-  }, [organizationId]);
+    fetchRoutes(organizationsNid);
+  }, [organizationsNid]);
 
   return (
     <>
       <div className={s.main_container}>
         <div className="row">
-          <div className="col">
-            <p>Lista de rutas</p>
+          <div
+            className="col"
+            style={{ textAlign: "center", marginBottom: "50px" }}
+          >
+            <hr />
           </div>
         </div>
 
         <div className="row">
-          <div className="col-sm-12 col-md-6">
-            <div className={s.main_header}>
-              <div className={s.btn_back}>
-                <img src={ArrowBack} className={s.arrow_back} />
-                <span>Conjunto de rutas</span>
-              </div>
+          <div className="col-12 col-sm-12 col-md-12 col-lg-6">
+            <div className={s.main_routes}>
+              <div className={s.main_header}>
+                <div className={s.btn_back}>
+                  <button className="btn btn-primary" onClick={handleBack}>Atras</button>
+                  <h5 style={{ marginBottom: "0px" }}>Conjunto de rutas</h5>
+                </div>
 
-              <div className={s.header_btn}>
-                <button className="btn btn-secondary">Editar</button>
-                <button className="btn btn-primary">
-                  Enviar a conductores
-                </button>
+                <div className={s.header_btn}>
+                  <button className="btn btn-secondary">Editar</button>
+                  <button className="btn btn-primary">
+                    Enviar a conductores
+                  </button>
+                </div>
               </div>
+              <RouteDetail routes={routes} fetchRoutes={fetchRoutes} organizationsNid={organizationsNid} />
             </div>
-
-            <div className={s.items}>
-              <ul className="pagination">
-                <li className="page-item active">
-                  <a className="page-link" href="#">
-                    Todo
-                  </a>
-                </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">
-                    1
-                  </a>
-                </li>
-                <li className="page-item">
-                  <a className="page-link" href="#">
-                    2
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <RouteDetail routes={routes}/>
           </div>
 
-          <div className="col-sm-12 col-md-6"></div>
+          <div className="col-12 col-sm-12 col-md-12 col-lg-6" >
+            <img src={MapImage} alt="" />
+          </div>
         </div>
       </div>
     </>
   );
-}
+};
 
-export default RouteSet
+export default RouteSet;

@@ -1,52 +1,48 @@
-import React, { useEffect, useState, useMemo } from "react";
-import s from "./style.module.css";
 import Logo from "../../assets/images/miniLogo.png";
-import { SchedulerAPI } from "../../api/scheduler";
+import { useLocation, useNavigate } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
 
-const RouteNavBar = ({ organizationsNid }) => {
-  const [organizations, setOrganizations] = useState([]);
 
-  const fetchOrganizations = async (organizationsNid) => {
-    if (organizationsNid && organizationsNid.length > 0) {
-      const organizationsResult = await Promise.all(
-        organizationsNid.map(async (organizationId) => {
-          const data = await SchedulerAPI.fetchOrganization(organizationId.nid);
-          return data;
-        })
-      );
+const RouteNavBar = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isLoginRoute = location.pathname === "/login";
+  const isRouteList = location.pathname === "/routeList";
+  const isRouteSet = location.pathname === "/routeSet"
 
-      setOrganizations(organizationsResult);
-    }
-  };
+  if (isLoginRoute) {
+    return null;
+  }
 
-  useEffect(() => {
-    fetchOrganizations(organizationsNid);
-  }, []);
-
-  const memoizedOrganizations = useMemo(() => organizations, [organizations]);
+  const handleLogout = () => {
+    navigate("/login")
+  }
 
   return (
-    <nav className="navbar navbar-expand-lg ">
-      <div className="container-fluid">
-        <h4 className="navbar-brand" href="#">
-          <img src={Logo} alt="" style={{ width: "50px", height: "50px" }} />
-          RUTAS
-        </h4>
+    <Navbar expand="lg" className="bg-body-tertiary">
+      <Container fluid>
+        <Navbar.Brand disabled><img src={Logo} alt="" style={{ width: "50px", height: "50px" }} />Routing</Navbar.Brand>
+        <Navbar.Toggle aria-controls="navbarScroll" />
+        <Navbar.Collapse id="navbarScroll">
+          <Nav
+            className="me-auto my-2 my-lg-0"
+            style={{ maxHeight: "100px" }}
+            navbarScroll
+          >
+            <Nav.Link className={isRouteList ? "active disabled": ""}>lista de rutas</Nav.Link>
+            <Nav.Link href="#action2" disabled className={isRouteSet ? "active": ""}>conjunto de rutas</Nav.Link>
+          </Nav>
+          <Form className="d-flex">
 
-        <div className={s.nav_organization}>
-          <span>Organización</span>
-          <select className="form-select">
-            <option value=""></option>
-            {memoizedOrganizations.map((org) => (
-              <option key={org.nid} value={org.nid}>
-                {org.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button className="btn btn-primary">Logout</button>
-      </div>
-    </nav>
+            <Button variant="primary" onClick={handleLogout}>Logout</Button>
+          </Form>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 

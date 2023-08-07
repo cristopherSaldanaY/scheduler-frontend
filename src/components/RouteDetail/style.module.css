@@ -1,3 +1,13 @@
 .tables{
     background-color: aliceblue;
 }
+
+.route_detail_container {
+    max-height: 500px; /* Ajusta esta altura máxima según tus necesidades */
+    overflow-y: auto;
+}
+
+.items {
+    display: flex;
+    padding-top: 40px;
+}

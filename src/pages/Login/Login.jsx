@@ -1,8 +1,8 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import s from "./style.module.css";
 import Logo from "../../assets/images/routing-logo.png";
 import { SchedulerAPI } from "../../api/scheduler";
-import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 const Login = () => {
@@ -15,15 +15,16 @@ const Login = () => {
 
     try {
       const response = await SchedulerAPI.login(username, password);
-      console.log(response.organizations)
-      const organizationsNid = response.organizations
+
+      const organizationsNid = response.organizations;
 
       navigate("/routeList", {
         state: {
           username,
           organizationsNid,
         },
-      }); 
+        replace: true
+      });
     } catch (error) {
       console.log(error);
       Swal.fire({
@@ -37,7 +38,7 @@ const Login = () => {
     <div className={s.main_container}>
       <div className="container">
         <div className={s.main_logo}>
-          <img src={Logo} className={s.logo_img} />
+          <img src={Logo} className={s.logo_img} alt="Logo" />
         </div>
         <div className="row">
           <div className="col">
