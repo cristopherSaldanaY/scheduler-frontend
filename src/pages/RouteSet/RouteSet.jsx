@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SchedulerAPI } from "../../api/scheduler";
-import s from "./style.module.css";
-import { useNavigate } from "react-router-dom";
+import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import RouteDetail from "../../components/RouteDetail/RouteDetail";
-import MapImage  from "../../assets/images/mapa.png"
+import MapImage from "../../assets/images/mapa.png";
 
 const RouteSet = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { organizationsNid, organizations } = location.state;
   const [routes, setRoutes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   async function fetchRoutes(selectedOrganization) {
     try {
@@ -41,85 +41,81 @@ const RouteSet = () => {
         })
       );
 
-      if (responseUpdated.length > 0) {
-        setRoutes(responseUpdated);
-        console.log("Rutas actualizadas:", responseUpdated);
-      }
+      console.log("Rutas cargadas");
+      setLoading(false);
+      setRoutes(responseUpdated);
     } catch (error) {
       console.log("Error al obtener rutas", error);
     }
   }
 
-  async function updateRoutes(routes) {
-    const routesUpdated = routes.map(async (route) => {
-      const driverName = await SchedulerAPI.fetchDriverById(route.driver_id);
-      const vehiclePlate = await SchedulerAPI.fetchVehicleById(
-        route.vehicle_id
-      );
-
-      const { name } = driverName;
-      const { plate } = vehiclePlate;
-
-      return {
-        ...route,
-        driver_name: name,
-        vehicle_plate: plate,
-      };
-    });
-    setRoutes(routesUpdated);
-  }
-
-  const handleBack = () =>{
-
+  const handleBack = () => {
     navigate("/routeList", {
       state: {
         organizationsNid: organizations,
       },
     });
-  }
+  };
 
   useEffect(() => {
     fetchRoutes(organizationsNid);
   }, [organizationsNid]);
 
   return (
-    <>
-      <div className={s.main_container}>
-        <div className="row">
-          <div
-            className="col"
-            style={{ textAlign: "center", marginBottom: "50px" }}
+    <Container>
+      <hr />
+      <Row className="justify-content-md-start mt-5">
+        <Col sm={2} md={2} xs={2}>
+          <Button
+            variant="primary"
+            style={{ marginTop: "4px" }}
+            onClick={handleBack}
           >
-            <hr />
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-12 col-sm-12 col-md-12 col-lg-6">
-            <div className={s.main_routes}>
-              <div className={s.main_header}>
-                <div className={s.btn_back}>
-                  <button className="btn btn-primary" onClick={handleBack}>Atras</button>
-                  <h5 style={{ marginBottom: "0px" }}>Conjunto de rutas</h5>
-                </div>
-
-                <div className={s.header_btn}>
-                  <button className="btn btn-secondary">Editar</button>
-                  <button className="btn btn-primary">
-                    Enviar a conductores
-                  </button>
-                </div>
-              </div>
-              <RouteDetail routes={routes} fetchRoutes={fetchRoutes} organizationsNid={organizationsNid} />
-            </div>
-          </div>
-
-          <div className="col-12 col-sm-12 col-md-12 col-lg-6" >
-            <img src={MapImage} alt="" />
-          </div>
-        </div>
-      </div>
-    </>
+            Atrás
+          </Button>
+        </Col>
+        <Col sm={10} md={10} xs={10}>
+          <h2>Conjunto de rutas</h2>
+        </Col>
+      </Row>
+      <br />
+      <Row className="justify-content-md-center">
+        <Col
+          lg={7}
+          style={
+            loading
+              ? {
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }
+              : {}
+          }
+        >
+          {loading ? (
+            <Spinner animation="border" variant="primary" />
+          ) : (
+            <RouteDetail
+              routes={routes}
+              fetchRoutes={fetchRoutes}
+              organizationsNid={organizationsNid}
+            />
+          )}
+        </Col>
+        <Col lg={5}>
+          <img
+            src={MapImage}
+            alt=""
+            style={{ width: "100%", borderRadius: "10px" }}
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <span></span>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

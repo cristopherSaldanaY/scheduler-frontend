@@ -4,8 +4,11 @@ import s from "./style.module.css";
 import Logo from "../../assets/images/routing-logo.png";
 import { SchedulerAPI } from "../../api/scheduler";
 import Swal from "sweetalert2";
+import { Container, Row, Col, Image } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 
-const Login = () => {
+const Login = ({setLoggedUsername}) => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -15,73 +18,70 @@ const Login = () => {
 
     try {
       const response = await SchedulerAPI.login(username, password);
-
       const organizationsNid = response.organizations;
+      setLoggedUsername(username)
 
       navigate("/routeList", {
         state: {
           username,
           organizationsNid,
         },
-        replace: true
+        replace: true,
       });
     } catch (error) {
       console.log(error);
+      const errorMessage = "Credenciales incorrectas";
       Swal.fire({
         icon: "error",
-        title: "Credenciales incorrectas",
+        title: "Error de inicio de sesión",
+        text: errorMessage,
+        confirmButtonColor: "#0d6efd"
       });
     }
   };
 
   return (
-    <div className={s.main_container}>
-      <div className="container">
-        <div className={s.main_logo}>
-          <img src={Logo} className={s.logo_img} alt="Logo" />
-        </div>
-        <div className="row">
-          <div className="col">
-            <div className={s.main_form}>
-              <div className={s.form_header}>
-                <h1>¡Te damos la bienvenida!</h1>
-                <p>Por favor, ingresa tus datos.</p>
-              </div>
-              <div className={s.form_input}>
-                <form>
-                  <div className="mb-3">
-                    <label className="form-label">Nombre de usuario</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Ej: username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Contraseña</label>
-                    <input
-                      type="password"
-                      className="form-control"
-                      placeholder="Ej: password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    onClick={handleLogin}
-                  >
-                    Iniciar sesión
-                  </button>
-                </form>
-              </div>
+    <div className={s.main_login}>
+      <Container>
+        <Row style={{ padding: "20px", height: "100%", alignItems: "center" }}>
+          <Col xs={10} sm={8} md={6} lg={5} style={{ margin: "0 auto" }}>
+            <Image src={Logo} fluid />
+            <div className={s.form_header}>
+              <h1>Te damos la bienvenida</h1>
+              <span>Por favor ingrese sus credenciales</span>
             </div>
-          </div>
-        </div>
-      </div>
+            <Form>
+              <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Label>Nombre de usuario</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ingrese el usuario"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Contraseña</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </Form.Group>
+              <Button
+                variant="primary"
+                type="submit"
+                style={{ width: "100%" }}
+                onClick={handleLogin}
+              >
+                Ingresar
+              </Button>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };

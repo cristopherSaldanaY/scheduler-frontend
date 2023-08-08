@@ -6,40 +6,37 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
-
-const RouteNavBar = () => {
+const RouteNavBar = ({username}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isLoginRoute = location.pathname === "/login";
   const isRouteList = location.pathname === "/routeList";
-  const isRouteSet = location.pathname === "/routeSet"
+  const isRouteSet = location.pathname === "/routeSet";
 
   if (isLoginRoute) {
     return null;
   }
 
   const handleLogout = () => {
-    navigate("/login")
-  }
+    navigate("/login");
+  };
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
-      <Container fluid>
-        <Navbar.Brand disabled><img src={Logo} alt="" style={{ width: "50px", height: "50px" }} />Routing</Navbar.Brand>
-        <Navbar.Toggle aria-controls="navbarScroll" />
-        <Navbar.Collapse id="navbarScroll">
-          <Nav
-            className="me-auto my-2 my-lg-0"
-            style={{ maxHeight: "100px" }}
-            navbarScroll
-          >
-            <Nav.Link className={isRouteList ? "active disabled": ""}>lista de rutas</Nav.Link>
-            <Nav.Link href="#action2" disabled className={isRouteSet ? "active": ""}>conjunto de rutas</Nav.Link>
-          </Nav>
-          <Form className="d-flex">
-
-            <Button variant="primary" onClick={handleLogout}>Logout</Button>
-          </Form>
+    <Navbar className="bg-body-dark" style={{ background: "#252525" }}>
+      <img
+        src="https://i0.wp.com/www.routinguc.com/wp-content/uploads/2021/07/02a_Logotipo_Apaisado-Negativo_solo.png?fit=900%2C449&ssl=1"
+        width={100}
+        style={{ overflow: "inherit" }}
+        alt=""
+      />
+      <Container>
+        <Navbar.Collapse className="justify-content-end" style={{gap: "50px"}} >
+          <Navbar.Text>
+            <span style={{ color: "#FFFFFF" }}>
+              Usuario: <a style={{ color: "rgb(215 215 215)", textDecoration: "none"  }} href="#login">{username}</a>
+            </span>
+          </Navbar.Text>
+          <Button type="submit" variant="primary" onClick={handleLogout}>Logout</Button>
         </Navbar.Collapse>
       </Container>
     </Navbar>

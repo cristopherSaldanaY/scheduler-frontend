@@ -29,13 +29,14 @@ const RouteModal = (props) => {
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered
+      style={{overflow: "hidden"}}
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
           Asignación de ruta
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body style={{overflow: "auto"}}>
         <Table className="table" variant="light">
           <thead>
             <tr>
