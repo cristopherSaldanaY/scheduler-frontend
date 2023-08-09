@@ -7,7 +7,7 @@ import { Container, Row, Col, Form, Table, Button } from "react-bootstrap";
 const RouteList = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { username,organizationsNid } = location.state;
+  const { organizationsNid } = location.state;
 
   const [selectedOrganization, setSelectedOrganization] = useState("");
   const [organizations, setOrganizations] = useState([]);
@@ -67,7 +67,7 @@ const RouteList = () => {
         <Col>
           {selectedOrganization === "" ? (
             <p>Seleccione una organización</p>
-          ) : selectedOrganization != "266b88c0-ffdc-40fe-a5dd-71649256625c" ? (
+          ) : selectedOrganization != organizations[0].nid ? (
             <p>No existen registro para esta organización</p>
           ) : (
             <Table striped bordered hover>

@@ -8,7 +8,7 @@ import { Container, Row, Col, Image } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-const Login = ({setLoggedUsername}) => {
+const Login = ({ setLoggedUsername }) => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -19,13 +19,10 @@ const Login = ({setLoggedUsername}) => {
     try {
       const response = await SchedulerAPI.login(username, password);
       const organizationsNid = response.organizations;
-      setLoggedUsername(username)
+      setLoggedUsername(username);
 
       navigate("/routeList", {
-        state: {
-          username,
-          organizationsNid,
-        },
+        state: { organizationsNid },
         replace: true,
       });
     } catch (error) {
@@ -35,7 +32,7 @@ const Login = ({setLoggedUsername}) => {
         icon: "error",
         title: "Error de inicio de sesión",
         text: errorMessage,
-        confirmButtonColor: "#0d6efd"
+        confirmButtonColor: "#0d6efd",
       });
     }
   };

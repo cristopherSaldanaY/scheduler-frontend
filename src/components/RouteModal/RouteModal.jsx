@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import { Table, Form } from "react-bootstrap";
 import s from "./style.module.css";
 import { BsGeoAltFill } from "react-icons/bs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const RouteModal = (props) => {
   const {
@@ -20,7 +20,10 @@ const RouteModal = (props) => {
   const [selectedDriver, setSelectedDriver] = useState("");
   const [selectedVehicle, setSelectedVehicle] = useState("");
 
-  const jaElement = document.getElementById("ja")
+  useEffect(() =>{
+    setSelectedDriver("")
+    setSelectedVehicle("")
+  },[show])
 
   return (
     <Modal
